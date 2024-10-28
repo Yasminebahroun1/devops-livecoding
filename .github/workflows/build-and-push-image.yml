@@ -9,9 +9,9 @@ on:
 
 
 jobs:
-  # define job to build and publish docker imagee
+  # define job to build and publish docker image
   build-and-push-docker-image:
-    if: ${{github.event.workflow_run.conclusion == 'success'&& github.event.workflow_head_branch=='main'}}
+    if: ${{github.event.workflow_run.conclusion == 'success' && github.event.workflow_head_branch=='main'}}
     runs-on: ubuntu-22.04
 
     # steps to perform in job
