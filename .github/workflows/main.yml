@@ -18,7 +18,7 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      #finally build your app with the latest command
+      #finally build your app with the latest commandd
       - name: Build and test with Maven
         run: mvn clean install
         working-directory: simple-api
