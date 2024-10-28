@@ -24,8 +24,8 @@ jobs:
         working-directory: simple-api
       - name: Build and test with
         run: mvn -B verify sonar:sonar
-          -Dsonar.projectKey=KARMOUNI_devops-livecoding
-          -Dsonar.organization=karmouni
+          -Dsonar.projectKey=Yasminebahroun1_devops-livecoding
+          -Dsonar.organization=yasminebahroun1
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
 
