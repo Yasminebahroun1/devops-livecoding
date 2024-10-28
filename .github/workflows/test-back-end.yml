@@ -1,10 +1,11 @@
-name: CI Test Backend
+name: Test Backend
 
 on:
   push:
     branches:
-      - main
       - develop
+      - main
+  pull_request:
 
 jobs:
   build-and-test:
@@ -19,14 +20,36 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      #finally build your app with the latest commanddd
-      - name: Build and test with Maven
-        run: mvn clean install
-        working-directory: simple-api
-      - name: Build and test with
-        run: mvn -B verify sonar:sonar
-          -Dsonar.projectKey=Yasminebahroun1_devops-livecoding
-          -Dsonar.organization=yasminebahroun1
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
+      - name: Build and Test with Maven
+        run: mvn -f simple-api/pom.xml clean verify
 
+  build-and-push-docker-image:
+    needs: build-and-test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./simple-api
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push database image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./database
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push http-server image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./http-server
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http-server:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
