@@ -18,8 +18,16 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      - name: Build and Test with Maven
-        run: mvn -f simple-api/pom.xml clean verify
+      #finally build your app with the latest command
+      - name: Build and test with Maven
+        run: mvn clean install
+        working-directory: simple-api
+      - name: Build and test with
+        run: mvn -B verify sonar:sonar
+          -Dsonar.projectKey=KARMOUNI_devops-livecoding
+          -Dsonar.organization=karmouni
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
 
   build-and-push-docker-image:
     needs: build-and-test
